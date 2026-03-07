@@ -19,7 +19,9 @@ public class Duke {
                 String message = in.nextLine().strip();
                 String[] components = message.split("\\s+", 2);
                 Command c = parser.parse(components[0]);
-                if (c instanceof ExitCommand) break;
+                if (c instanceof ExitCommand) {
+                    break;
+                }
                 c.execute();
             } catch (IllegalArgumentException e) {
                 System.out.println("Invalid Command");
