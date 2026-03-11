@@ -3,6 +3,7 @@ package seedu.duke;
 import seedu.duke.command.Command;
 import seedu.duke.command.ExitCommand;
 import seedu.duke.model.Blockchain;
+import seedu.duke.model.WalletManager;
 
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -13,8 +14,9 @@ public class Duke {
      */
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        Parser parser = new Parser();
         Blockchain blockchain = Blockchain.createDefault();
+        WalletManager walletManager = new WalletManager();
+        Parser parser = new Parser(walletManager);
 
         while (true) {
             try {

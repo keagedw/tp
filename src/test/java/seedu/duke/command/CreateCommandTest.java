@@ -1,0 +1,63 @@
+package seedu.duke.command;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import seedu.duke.model.Blockchain;
+import seedu.duke.model.WalletManager;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import org.junit.jupiter.api.Test;
+
+class CreateCommandTest {
+    @Test
+    void execute_validName_createsWallet() {
+        Blockchain blockchain = Blockchain.createDefault();
+        WalletManager walletManager = new WalletManager();
+        CreateCommand command = new CreateCommand("alice", walletManager);
+
+        String output = runCommand(command, blockchain);
+
+        assertEquals("Wallet created: alice" + System.lineSeparator(), output);
+        assertEquals(1, walletManager.getWallets().size());
+        assertEquals("alice", walletManager.getWallets().get(0).getName());
+    }
+
+    @Test
+    void execute_blankName_printsError() {
+        Blockchain blockchain = Blockchain.createDefault();
+        WalletManager walletManager = new WalletManager();
+        CreateCommand command = new CreateCommand("   ", walletManager);
+
+        String output = runCommand(command, blockchain);
+
+        assertEquals("Error: wallet name cannot be empty." + System.lineSeparator(), output);
+        assertEquals(0, walletManager.getWallets().size());
+    }
+
+    @Test
+    void execute_duplicateName_printsError() {
+        Blockchain blockchain = Blockchain.createDefault();
+        WalletManager walletManager = new WalletManager();
+        walletManager.createWallet("alice");
+        CreateCommand command = new CreateCommand("alice", walletManager);
+
+        String output = runCommand(command, blockchain);
+
+        assertEquals("Error: wallet name already exists." + System.lineSeparator(), output);
+        assertEquals(1, walletManager.getWallets().size());
+    }
+
+    private String runCommand(Command command, Blockchain blockchain) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+        try {
+            command.execute(blockchain);
+        } finally {
+            System.setOut(originalOut);
+        }
+        return outputStream.toString();
+    }
+}

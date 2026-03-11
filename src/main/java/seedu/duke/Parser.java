@@ -11,8 +11,15 @@ import seedu.duke.command.ListCommand;
 import seedu.duke.command.SendCommand;
 import seedu.duke.command.ValidateCommand;
 import seedu.duke.command.ViewBlockCommand;
+import seedu.duke.model.WalletManager;
 
 public class Parser {
+    private final WalletManager walletManager;
+
+    public Parser(WalletManager walletManager) {
+        this.walletManager = walletManager;
+    }
+
     public CommandWord parseCommand(String commandWord) {
         return CommandWord.valueOf(commandWord.toUpperCase());
     }
@@ -35,7 +42,7 @@ public class Parser {
         return switch (commandWord) {
         case LIST -> new ListCommand();
         case HELP -> new HelpCommand();
-        case CREATE -> new CreateCommand();
+        case CREATE -> new CreateCommand(arguments, walletManager);
         case BALANCE -> new BalanceCommand();
         case VALIDATE -> new ValidateCommand();
         case VIEWBLOCK -> new ViewBlockCommand(arguments);
