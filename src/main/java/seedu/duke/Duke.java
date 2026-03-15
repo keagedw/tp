@@ -23,7 +23,7 @@ public class Duke {
             String message = in.nextLine().strip();
             try {
                 String[] components = message.split("\\s+", 2);
-                Command c = Parser.parse(components[0]);
+                Command c = Parser.parse(components[0], blockchain);
                 if (c instanceof ExitCommand) {
                     break;
                 }
