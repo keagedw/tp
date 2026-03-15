@@ -3,10 +3,12 @@ package seedu.duke.command;
 import seedu.duke.Parser;
 
 public class HelpCommand extends Command {
-    private static final String HELP_DESCRIPTION = "format: help [COMMAND]\n" +
-            "COMMAND is optional\n" +
-            "If no valid COMMAND is given: lists all the available commands\n" +
-            "If a valid COMMAND is given: displays details regarding that command";
+    private static final String HELP_DESCRIPTION = """
+            format: help [COMMAND]
+            COMMAND is optional
+            If no valid COMMAND is given: lists all the available commands
+            If a valid COMMAND is given: displays details regarding that command
+            """;
 
     public HelpCommand() {
         super(HELP_DESCRIPTION);

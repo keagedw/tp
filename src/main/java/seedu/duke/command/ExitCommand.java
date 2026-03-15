@@ -1,8 +1,10 @@
 package seedu.duke.command;
 
 public class ExitCommand extends Command {
-    private static final String HELP_DESCRIPTION = "format: exit\n" +
-            "Exits the program";
+    private static final String HELP_DESCRIPTION = """
+            format: exit
+            Exits the program
+            """;
 
     public ExitCommand() {
         super(HELP_DESCRIPTION);

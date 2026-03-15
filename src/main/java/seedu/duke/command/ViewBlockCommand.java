@@ -1,9 +1,11 @@
 package seedu.duke.command;
 
 public class ViewBlockCommand extends Command {
-    private static final String HELP_DESCRIPTION = "format: viewblock INDEX\n" +
-            "Displays the full details of a block\n" +
-            "Details include: Block Index, Timestamp, Previous Hash, Current Hash and List of Transactions\n";
+    private static final String HELP_DESCRIPTION = """
+            format: viewblock INDEX
+            Displays the full details of a block
+            Details include: Block Index, Timestamp, Previous Hash, Current Hash and List of Transactions
+            """;
 
     public ViewBlockCommand() {
         super(HELP_DESCRIPTION);
