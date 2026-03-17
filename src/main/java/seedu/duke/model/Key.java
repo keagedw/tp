@@ -88,7 +88,9 @@ public class Key {
 
     public static String truncate(BigInteger bigInt) {
         String intRepresentation = bigInt.toString();
-        if (intRepresentation.length() <= 20) return intRepresentation;
+        if (intRepresentation.length() <= 20) {
+            return intRepresentation;
+        }
         return intRepresentation.substring(0, 10) + "..."
                 + intRepresentation.substring(intRepresentation.length() - 10);
     }
