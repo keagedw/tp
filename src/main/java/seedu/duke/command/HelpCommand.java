@@ -1,7 +1,6 @@
 package seedu.duke.command;
 
 import seedu.duke.Parser;
-import seedu.duke.exceptions.Exceptions;
 import seedu.duke.model.Blockchain;
 import seedu.duke.model.WalletManager;
 
@@ -29,6 +28,7 @@ public class HelpCommand extends Command {
         try {
             if (components.length < 2) {
                 for (CommandWord c : CommandWord.values()) {
+
                     System.out.print("  ");
                     System.out.print(c.getCommand());
                     for (int i = 0; i < 12 - c.getCommand().length(); i++) {
