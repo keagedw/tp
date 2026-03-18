@@ -1,6 +1,7 @@
 package seedu.duke.command;
 
 import seedu.duke.Parser;
+import seedu.duke.exceptions.Exceptions;
 import seedu.duke.model.Blockchain;
 import seedu.duke.model.WalletManager;
 
@@ -24,19 +25,24 @@ public class HelpCommand extends Command {
     public void execute(String description, Blockchain blockchain) {
         WalletManager walletManager = new WalletManager();
         Parser parser = new Parser(walletManager);
+        String[] components = description.split("c/");
         try {
-            Command c = parser.parse(description);
-            c.displayHelpDescription();
-        } catch (IllegalArgumentException e) {
-            for (CommandWord c : CommandWord.values()) {
-                System.out.print("  ");
-                System.out.print(c.getCommand());
-                for (int i = 0; i < 12 - c.getCommand().length(); i++) {
-                    System.out.print(" ");
+            if (components.length < 2) {
+                for (CommandWord c : CommandWord.values()) {
+                    System.out.print("  ");
+                    System.out.print(c.getCommand());
+                    for (int i = 0; i < 12 - c.getCommand().length(); i++) {
+                        System.out.print(" ");
+                    }
+                    System.out.println(c.getDescription());
                 }
-                System.out.println(c.getDescription());
+                System.out.println(HELP_MESSAGE);
+            } else {
+                Command c = parser.parse(components[1]);
+                c.displayHelpDescription();
             }
-            System.out.println("For more details about each command type 'help COMMAND', eg. 'help list'");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Please input a valid command, use 'help' to see the list of commands");
         }
     }
 }

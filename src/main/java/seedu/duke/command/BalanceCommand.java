@@ -14,6 +14,7 @@ public class BalanceCommand extends Command {
             Displays the balance of wallet up to 8 decimal points
             """;
     private static final String NAME_ERROR = "Error: wallet name cannot be empty.";
+    private static final String INVALID_FORMAT_ERROR = "Error: Invalid create format. Use: balance n/WALLET_NAME";
 
     private final String walletName;
 
@@ -23,12 +24,13 @@ public class BalanceCommand extends Command {
     }
 
     @Override
-    public void execute(String description, Blockchain blockchain) throws Exceptions {
+    public void execute(String arguments, Blockchain blockchain) throws Exceptions {
         if (walletName == null || walletName.isBlank()) {
             System.out.println(NAME_ERROR);
             return;
         }
 
+        String walletName = parseArguments(arguments);
         String trimmedWalletName = walletName.trim();
         BigDecimal balance = blockchain.getPreciseBalance(trimmedWalletName);
 
@@ -37,5 +39,18 @@ public class BalanceCommand extends Command {
 
     private String formatBalance(BigDecimal balance) {
         return balance.setScale(8, RoundingMode.HALF_UP).toPlainString();
+    }
+
+    private String parseArguments(String args) throws Exceptions {
+        if (args == null || args.isBlank()) {
+            throw new Exceptions(NAME_ERROR);
+        }
+
+        String trimmedArgs = args.trim();
+        if (!trimmedArgs.startsWith("w/")) {
+            throw new Exceptions(INVALID_FORMAT_ERROR);
+        }
+
+        return trimmedArgs.substring(2).trim();
     }
 }
