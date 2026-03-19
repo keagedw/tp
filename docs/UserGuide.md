@@ -37,11 +37,6 @@ The application is designed for educational use and records transactions in a si
 ## Features
 > [!NOTE]
 > ### **Command Formatting:**
-> + Commands are case-sensitive.  
-    e.g. in `help`,  
-    ✅ `help`  
-    ❌ `HELP`  
-    <br/>
 > + First tokens must always be the command word.  
     e.g. in `viewblock INDEX`,  
     ✅ `viewblock 2`  
@@ -75,12 +70,8 @@ The application is designed for educational use and records transactions in a si
 > + Parameters must be separated by spaces.   
     e.g. in `send w/WALLET_NAME to/RECIPIENT_ADDRESS amt/AMOUNT`  
     ✅ `send w/bob to/0x1111111111111111111111111111111111111111 amt/1.5`  
+    ✅ `send    w/bob    to/0x1111111111111111111111111111111111111111    amt/1.5`  
     ❌ `send w/bobto/0x1111111111111111111111111111111111111111amt/1.5`  
-    <br/>
-> + Parameters must be entered in the order they are shown.   
-    e.g. in `send w/WALLET_NAME to/RECIPIENT_ADDRESS amt/AMOUNT`  
-    ✅ `send w/bob to/0x1111111111111111111111111111111111111111 amt/1.5`  
-    ❌ `send w/bob amt/1.5 to/0x1111111111111111111111111111111111111111`  
     <br/>
 > + Parameters that are numbers must be written in numerical form not spelled out, and must be non-negative.  
     e.g in `mark TASK_INDEX`  
