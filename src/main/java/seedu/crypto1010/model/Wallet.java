@@ -8,7 +8,7 @@ import java.util.Objects;
 import seedu.crypto1010.exceptions.Exceptions;
 
 public class Wallet {
-    private final static String NO_ADDRESS_ERROR = "Generate keys first";
+    private static final String NO_ADDRESS_ERROR = "Generate keys first";
 
     private final String name;
     private final List<String> transactionHistory;
