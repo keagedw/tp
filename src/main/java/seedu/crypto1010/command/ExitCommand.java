@@ -5,9 +5,10 @@ import seedu.crypto1010.model.Blockchain;
 
 public class ExitCommand extends Command {
     private static final String HELP_DESCRIPTION = """
-            format: exit
+            Format: exit
             Exits the program
             """;
+    private static final String INVALID_FORMAT_ERROR = "Error: Invalid exit format. Use: exit";
 
     public ExitCommand() {
         super(HELP_DESCRIPTION);
@@ -15,6 +16,8 @@ public class ExitCommand extends Command {
 
     @Override
     public void execute(String description, Blockchain blockchain) throws Exceptions {
-        System.out.println("exit command executed");
+        if (description != null && !description.isBlank()) {
+            throw new Exceptions(INVALID_FORMAT_ERROR);
+        }
     }
 }

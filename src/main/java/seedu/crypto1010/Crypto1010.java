@@ -40,6 +40,7 @@ public class Crypto1010 {
                 String[] components = message.split("\\s+", 2);
                 String description = components.length > 1 ? components[1] : "";
                 if (c instanceof ExitCommand) {
+                    c.execute(description, blockchain);
                     saveData(blockchainStorage, walletStorage, blockchain, walletManager);
                     break;
                 }
