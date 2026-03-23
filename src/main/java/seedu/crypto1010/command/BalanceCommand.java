@@ -2,6 +2,7 @@ package seedu.crypto1010.command;
 
 import seedu.crypto1010.exceptions.Exceptions;
 import seedu.crypto1010.model.Blockchain;
+import seedu.crypto1010.model.WalletManager;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,19 +17,25 @@ public class BalanceCommand extends Command {
     private static final String NAME_ERROR = "Error: wallet name cannot be empty.";
     private static final String NAME_WHITESPACE_ERROR = "Error: wallet name must be one word without spaces.";
     private static final String INVALID_FORMAT_ERROR = "Error: Invalid balance format. Use: balance w/WALLET_NAME";
+    private static final String WALLET_NOT_FOUND_ERROR = "Error: Wallet not found.";
     private static final String BALANCE_FORMAT = "Use: balance w/WALLET_NAME";
 
     private final String arguments;
+    private final WalletManager walletManager;
 
-    public BalanceCommand(String arguments) {
+    public BalanceCommand(String arguments, WalletManager walletManager) {
         super(HELP_DESCRIPTION);
         this.arguments = arguments;
+        this.walletManager = walletManager;
     }
 
     @Override
     public void execute(String description, Blockchain blockchain) throws Exceptions {
         String walletName = parseArguments(arguments);
         String trimmedWalletName = walletName.trim();
+        if (!walletManager.hasWallet(trimmedWalletName)) {
+            throw new Exceptions(WALLET_NOT_FOUND_ERROR);
+        }
         BigDecimal balance = blockchain.getPreciseBalance(trimmedWalletName);
 
         System.out.println("Balance of " + trimmedWalletName + ": " + formatBalance(balance));
