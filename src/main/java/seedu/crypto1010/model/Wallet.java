@@ -46,16 +46,4 @@ public class Wallet {
         this.privateKey = keys[1];
         address = publicKey.getWalletAddress();
     }
-
-    private String bytesToHex(byte[] hashBytes) {
-        StringBuilder hex = new StringBuilder();
-        for (byte hashByte : hashBytes) {
-            String value = Integer.toHexString(0xff & hashByte);
-            if (value.length() == 1) {
-                hex.append('0');
-            }
-            hex.append(value);
-        }
-        return hex.toString();
-    }
 }
