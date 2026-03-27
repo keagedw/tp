@@ -23,6 +23,13 @@ Crypto1010 is implemented as a modular command-line application with clear separ
 4. `Command.execute(...)` mutates/queries model state.
 5. `Crypto1010` saves blockchain state after successful command execution.
 
+### Adding a new command
+- Add the new keyword and description to `CommandWord` so it is exposed through `help`.
+- Implement a new `Command` subclass in the `command` package and keep command-specific validation there.
+- Update `Parser.parse(...)` to return the new command and pass in `WalletManager` when the command needs wallet access.
+- Add a focused JUnit test under `src/test/java/seedu/crypto1010/command` following the existing command test pattern.
+- Add a manual test case in this guide so the CLI behaviour remains documented.
+
 ### Blockchain model
 - A `Blockchain` stores an ordered list of `Block`.
 - Each `Block` has:
@@ -67,9 +74,9 @@ Validation sequence:
 
 ### Persistence implementation
 - `BlockchainStorage` serializes blockchain state to JSON.
-- On startup, `Crypto1010` attempts to load and validate persisted data.
-- If loading fails, a default blockchain is initialized.
-- Wallets are currently in-memory only and are not persisted.
+- `WalletStorage` persists wallet names and transaction history in `data/wallets.txt`.
+- On startup, `Crypto1010` loads blockchain and wallet data independently.
+- If loading fails, the app falls back to a default blockchain and/or an empty wallet list.
 
 ### Suggested UML diagrams (update this plz)
 - Class diagram: `Command` hierarchy, `Parser`, `Crypto1010`, model classes.
