@@ -91,6 +91,12 @@ Crypto1010 provides a compact, practical environment to understand wallet transf
 | v1.0 | user | validate the blockchain | confirm chain integrity after modifications |
 | v1.0 | user | inspect a specific block | view exact block-level transaction data |
 
+### Planned enhancement: account switching
+- User story: As a user, I can switch accounts and save progress.
+- Add account switching.
+- Load/save different wallet states.
+- Improve persistence logic.
+
 ## Non-Functional Requirements
 - The application shall run on Java 17.
 - The application shall be usable entirely via CLI input/output.
