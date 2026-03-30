@@ -9,6 +9,7 @@ public enum CommandWord {
     LIST("list", "lists all your wallets"),
     KEYGEN("keygen", "generates and displays key pair"),
     BALANCE("balance", "displays balance of wallet"),
+    HISTORY("history", "shows the send history of a wallet"),
     SEND("send", "sends cryptocurrency from one wallet to another"),
 
     // Blockchain related commands
