@@ -14,6 +14,7 @@ Crypto1010 is implemented as a modular command-line application with clear separ
 - `Parser` maps raw user input to concrete command objects.
 - `command` package implements user-facing functionality (`create`, `send`, `balance`, etc.).
 - `model` package contains core blockchain and wallet logic.
+- `service` package centralizes transfer recording so blockchain writes and wallet history stay aligned.
 - `storage` package persists the blockchain to JSON (`data/blockchain.json`).
 
 ### Command execution flow
@@ -69,8 +70,18 @@ Validation sequence:
 3. verify amount > 0
 4. validate recipient address format
 5. resolve fee (manual or speed-based)
-6. verify sufficient balance (`amount + fee`)
-7. append transfer transaction and optional network-fee transaction
+6. pass the transfer to `TransactionRecordingService`
+
+### Centralized transfer recording
+- `TransactionRecordingService` is the single write path for successful transfers.
+- It verifies the sender wallet exists and has sufficient balance for `amount + fee`.
+- It records blockchain transactions and the sender wallet history from the same `TransferRequest`.
+- Local recipient addresses are normalized to wallet names on-chain when a matching wallet exists.
+
+### `history` command implementation
+- `HistoryCommand` reads the persisted wallet send history from `Wallet`.
+- It validates `w/WALLET_NAME`, resolves the wallet case-insensitively through `WalletManager`, and prints numbered entries.
+- The command is intentionally wallet-local: it shows recorded outgoing send history, not a reconstructed blockchain-wide ledger view.
 
 ### Persistence implementation
 - `BlockchainStorage` serializes blockchain state to JSON.
@@ -102,6 +113,7 @@ Crypto1010 provides a compact, practical environment to understand wallet transf
 | v1.0 | user | list wallets | confirm available wallets in the current session |
 | v1.0 | user | check wallet balance | verify transaction effects numerically |
 | v1.0 | user | send funds with fee controls | model transfer and fee trade-offs |
+| v1.0 | user | view my wallet send history | review past outgoing transfers |
 | v1.0 | user | validate the blockchain | confirm chain integrity after modifications |
 | v1.0 | user | inspect a specific block | view exact block-level transaction data |
 
@@ -143,8 +155,8 @@ Crypto1010 provides a compact, practical environment to understand wallet transf
    - `help c/list`
    - Expected: prints out details about the list command
 2. Create wallets:
-   - `create alice`
-   - `create bob`
+   - `create w/alice`
+   - `create w/bob`
    - Expected: confirmation messages for each wallet.
 1. List wallets:
    - `list`
@@ -161,6 +173,9 @@ Crypto1010 provides a compact, practical environment to understand wallet transf
 1. Invalid recipient address:
    - `send w/bob to/not-an-address amt/1`
    - Expected: invalid recipient address error.
+1. View wallet send history:
+   - `history w/bob`
+   - Expected: either numbered outgoing send history entries or a no-history message.
 1. Validate chain:
    - `validate`
    - Expected: valid-chain success message unless data is corrupted.

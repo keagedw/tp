@@ -72,4 +72,23 @@ public class HelpCommandTest {
                 "Format: send w/WALLET_NAME to/RECIPIENT_ADDRESS amt/AMOUNT [speed/SPEED] [fee/FEE] [note/MEMO]"
         ));
     }
+
+    @Test
+    public void execute_helpForHistoryCommand_showsCommandFormat() {
+        HelpCommand helpCommand = new HelpCommand();
+        Blockchain blockchain = Blockchain.createDefault();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outputStream));
+
+        try {
+            helpCommand.execute("c/history", blockchain);
+        } finally {
+            System.setOut(originalOut);
+        }
+
+        String output = outputStream.toString();
+        assertTrue(output.contains("Format: history w/WALLET_NAME"));
+    }
 }
