@@ -4,6 +4,8 @@ import seedu.crypto1010.Parser;
 import seedu.crypto1010.model.Blockchain;
 import seedu.crypto1010.model.WalletManager;
 
+import java.util.Scanner;
+
 public class HelpCommand extends Command {
     private static final String COMMAND_PREFIX = "c/";
     private static final int COMMAND_LIST_COLUMN_WIDTH = 12;
@@ -19,8 +21,11 @@ public class HelpCommand extends Command {
             "For more details about each command type 'help c/COMMAND', eg. 'help c/list'";
     private static final String INVALID_FORMAT_ERROR = "Error: Invalid help format. Use: help [c/COMMAND]";
 
-    public HelpCommand() {
+    private final String arguments;
+
+    public HelpCommand(String arguments) {
         super(HELP_DESCRIPTION);
+        this.arguments = arguments;
     }
 
     @Override
@@ -29,11 +34,7 @@ public class HelpCommand extends Command {
         Parser parser = new Parser(walletManager);
 
         try {
-            String trimmedDescription = description == null ? "" : description.trim();
-            if ("help".equalsIgnoreCase(trimmedDescription)) {
-                trimmedDescription = "";
-            }
-            if (trimmedDescription.isEmpty()) {
+            if (arguments.isEmpty()) {
                 for (CommandWord c : CommandWord.values()) {
                     assert c.getCommand() != null : "command word should have a command";
                     assert c.getDescription() != null : "command word should have a description";
@@ -47,12 +48,12 @@ public class HelpCommand extends Command {
                 }
                 System.out.println(HELP_MESSAGE);
             } else {
-                if (!trimmedDescription.startsWith(COMMAND_PREFIX)) {
+                if (!arguments.startsWith(COMMAND_PREFIX)) {
                     System.out.println(INVALID_FORMAT_ERROR);
                     return;
                 }
 
-                String commandName = trimmedDescription.substring(COMMAND_PREFIX.length()).trim();
+                String commandName = arguments.substring(COMMAND_PREFIX.length()).trim();
                 if (commandName.isEmpty() || commandName.chars().anyMatch(Character::isWhitespace)) {
                     System.out.println(INVALID_FORMAT_ERROR);
                     return;

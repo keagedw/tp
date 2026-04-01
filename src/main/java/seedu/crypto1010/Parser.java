@@ -10,6 +10,7 @@ import seedu.crypto1010.command.HistoryCommand;
 import seedu.crypto1010.command.KeygenCommand;
 import seedu.crypto1010.command.ListCommand;
 import seedu.crypto1010.command.SendCommand;
+import seedu.crypto1010.command.TutorialCommand;
 import seedu.crypto1010.command.ValidateCommand;
 import seedu.crypto1010.command.ViewBlockCommand;
 import seedu.crypto1010.model.WalletManager;
@@ -42,7 +43,7 @@ public class Parser {
         String arguments = components.length > 1 ? components[1].trim() : "";
         return switch (commandWord) {
         case LIST -> new ListCommand(walletManager);
-        case HELP -> new HelpCommand();
+        case HELP -> new HelpCommand(arguments);
         case CREATE -> new CreateCommand(arguments, walletManager);
         case BALANCE -> new BalanceCommand(arguments, walletManager);
         case HISTORY -> new HistoryCommand(arguments, walletManager);
@@ -51,6 +52,7 @@ public class Parser {
         case EXIT -> new ExitCommand();
         case SEND -> new SendCommand(arguments, walletManager);
         case KEYGEN -> new KeygenCommand(arguments, walletManager);
+        case TUTORIAL -> new TutorialCommand();
         };
     }
 }
