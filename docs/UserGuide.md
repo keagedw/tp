@@ -1,6 +1,6 @@
 # Crypto1010 User Guide  
 ## Introduction
-Crypto1010 is a command-line blockchain wallet simulator. It supports wallet creation, key generation, transfers, balance queries, and blockchain validation.
+Crypto1010 is a command-line blockchain wallet simulator. It supports wallet creation, key generation, transfers, balance queries, wallet history lookup, and blockchain validation.
 
 The application is designed for educational use and records transactions in a simple blockchain persisted as JSON.
 
@@ -14,9 +14,11 @@ The application is designed for educational use and records transactions in a si
   + #### [Generate keys for a wallet: `keygen`](#keygen-generate-keys-for-a-wallet)
   + #### [Show wallet balance: `balance`](#balance-show-wallet-balance)
   + #### [Create a transfer transaction: `send`](#send-create-a-transfer-transaction)
+  + #### [Show wallet send history: `history`](#history-show-wallet-send-history)
   + #### [Validate blockchain integrity: `validate`](#validate-validate-blockchain-integrity)
   + #### [View one block: `viewblock`](#viewblock-view-one-block)
   + #### [Save and terminate: `exit`](#exit-save-and-terminate)
++ #### [Coming Soon](#coming-soon)
 + #### [Command Summary](#command-summary)
 + #### [Data and Persistence](#data-and-persistence)
 + #### [FAQ](#faq)
@@ -145,6 +147,16 @@ Examples:
 - `send w/bob to/0x1111111111111111111111111111111111111111 amt/2 speed/fast`
 - `send w/bob to/0x1111111111111111111111111111111111111111 amt/2 fee/0.02 note/Urgent payment`
 
+### `history`: Show wallet send history
+Format: `history w/WALLET_NAME`
+
+- Shows the recorded outgoing transaction history for the wallet.
+- Entries are displayed in chronological order, oldest first.
+- If the wallet has no recorded send history, the app will say so.
+
+Example:
+- `history w/bob`
+
 ### `validate`: Validate blockchain integrity
 Format: `validate`
 
@@ -163,6 +175,17 @@ Example:
 Format: `exit`
 
 - Saves blockchain data and exits the program.
+
+---
+## Coming Soon
+Based on planned work tracked in project discussions/issues, the next user-facing feature is:
+
+### Account switching (planned)
+- Switch between multiple named accounts without restarting the app.
+- Save and load account-specific wallet state.
+- Improve persistence boundaries so each account context remains isolated.
+
+This feature is not available yet in the current release.
 ---
 ## Command Summary
 - `help [COMMAND]`
@@ -171,21 +194,25 @@ Format: `exit`
 - `keygen w/WALLET_NAME`
 - `balance w/WALLET_NAME`
 - `send w/WALLET_NAME to/RECIPIENT_ADDRESS amt/AMOUNT [speed/SPEED] [fee/FEE] [note/MEMO]`
+- `history w/WALLET_NAME`
 - `validate`
 - `viewblock INDEX`
 - `exit`
 ---
 ## Data and Persistence
 - Blockchain data is stored in `data/blockchain.json`.
-- Transaction history persists across runs.
-- Wallet definitions are in-memory only in the current version; recreate wallets when starting a new session.
+- Wallet names and wallet send history are stored in `data/wallets.txt`.
+- Generated keys and wallet addresses are not currently persisted; run `keygen` again after restarting if you need an address.
 ---
 ## FAQ
 **Q**: Where is my blockchain data stored?  
 **A**: In `data/blockchain.json`.
 
-**Q**: Why does `send` say wallet not found after restart?  
-**A**: Wallets are not persisted in this version. Create the wallet again using `create NAME`.
+**Q**: Why is my wallet address missing after restart?  
+**A**: Wallet names and send history are persisted, but generated keys and wallet addresses are not. Run `keygen w/WALLET_NAME` again.
 
 **Q**: Can I transfer to a wallet name directly?  
 **A**: No. `send` requires a recipient address string in `to/`.
+
+**Q**: What does `history` show?  
+**A**: `history w/WALLET_NAME` shows the wallet's recorded outgoing send history, not every blockchain transfer involving that wallet.
