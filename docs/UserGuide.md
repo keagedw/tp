@@ -100,6 +100,8 @@ The application is designed for educational use and records transactions in a si
     e.g. in `validate`  
     `validate dsja 2190` will be interpreted as `validate`  
     <br/>
+<br>
+
 ### `help`: Display command help
 Format: `help [c/COMMAND]`
 
