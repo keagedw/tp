@@ -224,7 +224,8 @@ Based on planned work tracked in project discussions/issues, the next user-facin
 This feature is not available yet in the current release.
 ---
 ## Command Summary
-- `help [COMMAND]`
+- `help [c/COMMAND]`
+- `tutorial`
 - `create w/WALLET_NAME [curr/CURRENCY]`
 - `list`
 - `keygen w/WALLET_NAME`
