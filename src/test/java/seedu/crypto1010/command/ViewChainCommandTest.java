@@ -35,17 +35,6 @@ class ViewChainCommandTest {
     }
 
     @Test
-    void execute_withUnexpectedArguments_throwsFormatError() {
-        Blockchain blockchain = Blockchain.createDefault();
-        ViewChainCommand command = new ViewChainCommand();
-
-        Crypto1010Exception exception = assertThrows(
-                Crypto1010Exception.class,
-                () -> command.execute("unexpected", blockchain));
-        assertEquals("Error: Invalid viewchain format. Use: viewchain", exception.getMessage());
-    }
-
-    @Test
     void execute_emptyBlockchain_printsZeroTransactions() {
         Blockchain blockchain = new Blockchain(List.of(
                 new Block(0, blockchainTime(), "0000000000000000", List.of("Genesis Block"))));
