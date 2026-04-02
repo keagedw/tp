@@ -8,6 +8,7 @@ import seedu.crypto1010.service.TransferRequest;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
