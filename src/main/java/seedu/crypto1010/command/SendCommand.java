@@ -67,7 +67,7 @@ public class SendCommand extends Command {
     }
 
     @Override
-    public void execute(String description, Blockchain blockchain) throws Crypto1010Exception {
+    public void execute(Blockchain blockchain, Scanner in) throws Crypto1010Exception {
         ParsedArgs parsed = parseRequiredArguments(arguments);
         validateSenderWallet(parsed.walletName);
         validateRecipientAddress(parsed.recipientAddress);
