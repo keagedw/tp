@@ -1,9 +1,5 @@
 package seedu.crypto1010;
 
-import org.jline.reader.LineReader;
-import org.jline.reader.LineReaderBuilder;
-import org.jline.terminal.Terminal;
-import org.jline.terminal.TerminalBuilder;
 import seedu.crypto1010.auth.AuthenticationException;
 import seedu.crypto1010.auth.AuthenticationService;
 import seedu.crypto1010.command.Command;
@@ -14,10 +10,9 @@ import seedu.crypto1010.model.WalletManager;
 import seedu.crypto1010.storage.AccountStorage;
 import seedu.crypto1010.storage.BlockchainStorage;
 import seedu.crypto1010.storage.WalletStorage;
+import seedu.crypto1010.ui.InteractiveShell;
 
-import java.io.Console;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -25,8 +20,6 @@ import java.util.logging.Logger;
 
 public class Crypto1010 {
     private static final Logger LOGGER = Logger.getLogger(Crypto1010.class.getName());
-    private static LineReader maskingLineReader;
-    private static boolean maskingReaderInitialized;
     private static final String DIVIDER =
             "============================================================";
     private static final String ACCOUNT_ACCESS_HEADER = "Crypto1010 Account Access";
@@ -38,8 +31,9 @@ public class Crypto1010 {
      */
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
+        InteractiveShell shell = InteractiveShell.create(in);
         AuthenticationService authenticationService = loadAuthenticationService();
-        String accountUsername = authenticateUser(in, authenticationService);
+        String accountUsername = authenticateUser(shell, authenticationService);
         if (accountUsername == null) {
             return;
         }
@@ -126,10 +120,10 @@ public class Crypto1010 {
         return authenticationService;
     }
 
-    private static String authenticateUser(Scanner in, AuthenticationService authenticationService) {
+    private static String authenticateUser(InteractiveShell shell, AuthenticationService authenticationService) {
         while (true) {
             printAuthenticationMenu(authenticationService);
-            String choice = promptForTrimmedInput(in, "Choice:");
+            String choice = shell.readPlain("Choice:");
             if (choice == null) {
                 return null;
             }
@@ -137,14 +131,14 @@ public class Crypto1010 {
             switch (choice.toLowerCase()) {
             case "1":
             case "login":
-                String loggedInUsername = handleLogin(in, authenticationService);
+                String loggedInUsername = handleLogin(shell, authenticationService);
                 if (loggedInUsername != null) {
                     return loggedInUsername;
                 }
                 break;
             case "2":
             case "register":
-                String registeredUsername = handleRegistration(in, authenticationService);
+                String registeredUsername = handleRegistration(shell, authenticationService);
                 if (registeredUsername != null) {
                     return registeredUsername;
                 }
@@ -171,14 +165,14 @@ public class Crypto1010 {
         System.out.println(DIVIDER);
     }
 
-    private static String handleLogin(Scanner in, AuthenticationService authenticationService) {
+    private static String handleLogin(InteractiveShell shell, AuthenticationService authenticationService) {
         if (!authenticationService.hasRegisteredAccounts()) {
             System.out.println("Error: No accounts registered yet. Choose register first.");
             return null;
         }
 
-        String username = promptForTrimmedInput(in, "Username:");
-        String password = promptForPasswordInput(in, "Password:");
+        String username = shell.readPlain("Username:");
+        String password = shell.readSecret("Password:");
         if (username == null || password == null) {
             return null;
         }
@@ -193,10 +187,10 @@ public class Crypto1010 {
         }
     }
 
-    private static String handleRegistration(Scanner in, AuthenticationService authenticationService) {
-        String username = promptForTrimmedInput(in, "Choose username:");
-        String password = promptForPasswordInput(in, "Choose password:");
-        String passwordConfirmation = promptForPasswordInput(in, "Confirm password:");
+    private static String handleRegistration(InteractiveShell shell, AuthenticationService authenticationService) {
+        String username = shell.readPlain("Choose username:");
+        String password = shell.readSecret("Choose password:");
+        String passwordConfirmation = shell.readSecret("Confirm password:");
         if (username == null || password == null || passwordConfirmation == null) {
             return null;
         }
@@ -209,67 +203,6 @@ public class Crypto1010 {
             System.out.println(e.getMessage());
             return null;
         }
-    }
-
-    private static String promptForTrimmedInput(Scanner in, String prompt) {
-        System.out.print(prompt + " ");
-        try {
-            return in.nextLine().strip();
-        } catch (NoSuchElementException e) {
-            return null;
-        }
-    }
-
-    private static String promptForPasswordInput(Scanner in, String prompt) {
-        String maskedPassword = readPasswordWithMask(prompt);
-        if (maskedPassword != null) {
-            return maskedPassword;
-        }
-
-        Console console = System.console();
-        if (console != null) {
-            char[] passwordChars = console.readPassword("%s ", prompt);
-            if (passwordChars == null) {
-                return null;
-            }
-            String password = new String(passwordChars).strip();
-            Arrays.fill(passwordChars, '\0');
-            return password;
-        }
-        return promptForTrimmedInput(in, prompt);
-    }
-
-    private static String readPasswordWithMask(String prompt) {
-        LineReader lineReader = getMaskingLineReader();
-        if (lineReader == null) {
-            return null;
-        }
-        try {
-            String password = lineReader.readLine(prompt + " ", '*');
-            return password == null ? null : password.strip();
-        } catch (RuntimeException e) {
-            return null;
-        }
-    }
-
-    private static LineReader getMaskingLineReader() {
-        if (maskingReaderInitialized) {
-            return maskingLineReader;
-        }
-
-        maskingReaderInitialized = true;
-        try {
-            Logger.getLogger("org.jline.utils.Log").setLevel(Level.SEVERE);
-            Terminal terminal = TerminalBuilder.builder()
-                    .system(true)
-                    .build();
-            maskingLineReader = LineReaderBuilder.builder()
-                    .terminal(terminal)
-                    .build();
-        } catch (IOException | RuntimeException e) {
-            maskingLineReader = null;
-        }
-        return maskingLineReader;
     }
 
     private static void printWelcome(String accountUsername) {
