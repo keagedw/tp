@@ -13,15 +13,27 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class WalletStorageTest {
-    private static final Path DATA_DIR = Path.of(System.getProperty("user.dir"), "data");
-    private static final Path WALLET_FILE = DATA_DIR.resolve("wallets.txt");
+    @TempDir
+    Path tempDir;
+
+    private Path dataDir;
+    private Path walletFile;
+
+    @BeforeEach
+    void setUp() {
+        System.setProperty("crypto1010.dataDir", tempDir.toString());
+        dataDir = tempDir;
+        walletFile = dataDir.resolve("wallets.txt");
+    }
 
     @AfterEach
-    void cleanup() throws IOException {
-        Files.deleteIfExists(WALLET_FILE);
+    void tearDown() {
+        System.clearProperty("crypto1010.dataDir");
     }
 
     @Test
@@ -63,7 +75,7 @@ class WalletStorageTest {
     @Test
     void load_missingFile_returnsEmptyWalletManager() throws IOException {
         WalletStorage storage = new WalletStorage(WalletStorageTest.class);
-        Files.deleteIfExists(WALLET_FILE);
+        Files.deleteIfExists(walletFile);
 
         WalletManager loaded = storage.load();
 
@@ -72,8 +84,8 @@ class WalletStorageTest {
 
     @Test
     void load_duplicateWalletEntries_throwsIOException() throws IOException {
-        Files.createDirectories(DATA_DIR);
-        Files.writeString(WALLET_FILE, """
+        Files.createDirectories(dataDir);
+        Files.writeString(walletFile, """
                 W|alice
                 E
                 W|alice

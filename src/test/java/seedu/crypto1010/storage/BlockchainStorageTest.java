@@ -14,30 +14,25 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class BlockchainStorageTest {
-    private static final Path DATA_DIR = Path.of(System.getProperty("user.dir"), "data");
-    private static final Path BLOCKCHAIN_FILE = DATA_DIR.resolve("blockchain.json");
+    @TempDir
+    Path tempDir;
 
-    private String originalBlockchainContent;
-    private boolean hadOriginalBlockchainFile;
+    private Path dataDir;
+    private Path blockchainFile;
 
     @BeforeEach
-    void backupExistingBlockchainFile() throws IOException {
-        hadOriginalBlockchainFile = Files.exists(BLOCKCHAIN_FILE);
-        if (hadOriginalBlockchainFile) {
-            originalBlockchainContent = Files.readString(BLOCKCHAIN_FILE, StandardCharsets.UTF_8);
-        }
+    void setUp() {
+        System.setProperty("crypto1010.dataDir", tempDir.toString());
+        dataDir = tempDir;
+        blockchainFile = dataDir.resolve("blockchain.json");
     }
 
     @AfterEach
-    void restoreBlockchainFile() throws IOException {
-        if (hadOriginalBlockchainFile) {
-            Files.createDirectories(BLOCKCHAIN_FILE.getParent());
-            Files.writeString(BLOCKCHAIN_FILE, originalBlockchainContent, StandardCharsets.UTF_8);
-        } else {
-            Files.deleteIfExists(BLOCKCHAIN_FILE);
-        }
+    void tearDown() {
+        System.clearProperty("crypto1010.dataDir");
     }
 
     @Test
@@ -57,7 +52,7 @@ class BlockchainStorageTest {
 
     @Test
     void load_missingFile_returnsDefaultBlockchain() throws IOException {
-        Files.deleteIfExists(BLOCKCHAIN_FILE);
+        Files.deleteIfExists(blockchainFile);
         BlockchainStorage storage = new BlockchainStorage(BlockchainStorageTest.class);
 
         Blockchain loaded = storage.load();
@@ -68,7 +63,7 @@ class BlockchainStorageTest {
 
     @Test
     void load_invalidBlockchain_throwsIOException() throws IOException {
-        Files.createDirectories(DATA_DIR);
+        Files.createDirectories(dataDir);
         String invalidBlockchainJson = """
                 {
                   "blocks": [
@@ -82,7 +77,7 @@ class BlockchainStorageTest {
                   ]
                 }
                 """;
-        Files.writeString(BLOCKCHAIN_FILE, invalidBlockchainJson, StandardCharsets.UTF_8);
+        Files.writeString(blockchainFile, invalidBlockchainJson, StandardCharsets.UTF_8);
         BlockchainStorage storage = new BlockchainStorage(BlockchainStorageTest.class);
 
         IOException exception = assertThrows(IOException.class, storage::load);
