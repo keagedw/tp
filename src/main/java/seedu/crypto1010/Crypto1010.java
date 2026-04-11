@@ -120,7 +120,7 @@ public class Crypto1010 {
                     return SessionOutcome.LOGOUT;
                 }
             } catch (Crypto1010Exception e) {
-                LOGGER.log(Level.WARNING, "Command execution failed.", e);
+                LOGGER.log(Level.FINE, "Command execution failed.", e);
                 System.out.println(e.getMessage());
             }
         }
