@@ -6,14 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import seedu.crypto1010.exceptions.Crypto1010Exception;
 import seedu.crypto1010.model.Blockchain;
-    // import seedu.crypto1010.model.KeyPair;
+// import seedu.crypto1010.model.KeyPair;
 import seedu.crypto1010.model.Wallet;
 import seedu.crypto1010.model.WalletManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
-    // import java.math.BigInteger;
+// import java.math.BigInteger;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
