@@ -25,6 +25,7 @@ public class KeygenCommand extends Command {
     private static final String NAME_WHITESPACE_ERROR = "Error: wallet name must be one word without spaces.";
     private static final String INVALID_FORMAT_ERROR = "Error: Invalid keygen format. Use: keygen w/WALLET_NAME";
     private static final String KEYGEN_FORMAT = "Use: keygen w/WALLET_NAME";
+    private static final String KEYS_ALREADY_SET_ERROR = "Error: wallet already has a key pair.";
 
     private final String arguments;
     private final WalletManager walletManager;
@@ -40,7 +41,10 @@ public class KeygenCommand extends Command {
         String walletName = parseArguments(arguments);
         Wallet wallet = walletManager.findWallet(walletName)
                 .orElseThrow(() -> new Crypto1010Exception(WALLET_NOT_FOUND_ERROR));
-        wallet.setKeys(KeyPair.generateEth());
+        if (wallet.hasKeyPair()) {
+            throw new Crypto1010Exception(KEYS_ALREADY_SET_ERROR);
+        }
+        wallet.setKeys(KeyPair.generate(wallet.getCurrencyCode()));
         CliVisuals.printKeyValuePanel("Key Pair Generated", List.of(
                 List.of("Wallet", wallet.getName()),
                 List.of("Address", wallet.getAddress())));

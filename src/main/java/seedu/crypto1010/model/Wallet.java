@@ -8,8 +8,8 @@ import java.util.Objects;
 import seedu.crypto1010.exceptions.Crypto1010Exception;
 
 public class Wallet {
-    private static final String NO_ADDRESS_ERROR = "Generate keys first";
-    private static final String INVALID_KEYS_ERROR = "keys must contain public and private keys";
+    private static final String NO_ADDRESS_ERROR = "Error: Generate keys first";
+    private static final String INVALID_KEYS_ERROR = "Error: Keys must contain public and private keys";
 
     private final String name;
     private final String currencyCode;
@@ -45,6 +45,10 @@ public class Wallet {
         return address;
     }
 
+    public boolean hasKeyPair() {
+        return keyPair != null;
+    }
+
     public void addTransaction(String transactionEntry) {
         transactionHistory.add(Objects.requireNonNull(transactionEntry).trim());
         assert !transactionHistory.get(transactionHistory.size() - 1).isBlank()
@@ -56,11 +60,12 @@ public class Wallet {
         return Collections.unmodifiableList(transactionHistory);
     }
 
-    public void setKeys(KeyPair keys) {
+    public void setKeys(KeyPair keys) throws Crypto1010Exception {
         String generatedAddress = keys.getWalletAddress();
         if (generatedAddress == null || generatedAddress.isBlank()) {
             throw new IllegalArgumentException(INVALID_KEYS_ERROR);
         }
+        this.keyPair = keys;
         this.address = generatedAddress;
     }
 }

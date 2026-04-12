@@ -76,6 +76,17 @@ public class KeyPair {
         return currencyCode;
     }
 
+    public static KeyPair generate(String currencyCode) throws Crypto1010Exception {
+        String normalized = CurrencyCode.normalizeOrDefault(currencyCode);
+        if (normalized.equals("btc")) {
+            return generateBtc();
+        } else if (normalized.equals("eth")) {
+            return generateEth();
+        } else {
+            return generateGeneric(); // full keypair, ETH-style address, stored as "generic"
+        }
+    }
+
     public static KeyPair generateEth() throws Crypto1010Exception {
         System.out.println(GENERATE_START);
 
@@ -98,7 +109,8 @@ public class KeyPair {
         System.out.println(ADDRESS_DISPLAY + address);
         System.out.println(COMPLETE_DISPLAY);
 
-        return new KeyPair(privateKey, publicKeyPoint.xCoord, publicKeyPoint.yCoord, address, "eth");
+        return new KeyPair(privateKey, publicKeyPoint.xCoord, publicKeyPoint.yCoord,
+                           address, CurrencyCode.normalize("eth"));
     }
 
     public static KeyPair generateBtc() throws Crypto1010Exception {
@@ -123,12 +135,34 @@ public class KeyPair {
         System.out.println(ADDRESS_DISPLAY + address);
         System.out.println(COMPLETE_DISPLAY);
 
-        return new KeyPair(privateKey, publicKeyPoint.xCoord, publicKeyPoint.yCoord, address, "btc");
+        return new KeyPair(privateKey, publicKeyPoint.xCoord, publicKeyPoint.yCoord,
+                           address, CurrencyCode.normalize("btc"));
     }
 
     public static KeyPair generateGeneric() throws Crypto1010Exception {
-        // generic wallets default to ETH-style address
-        return generateEth();
+        System.out.println(GENERATE_START);
+
+        BigInteger privateKey = generatePrivateKey();
+        System.out.println(PRIVATE_KEY_DISPLAY + truncate(privateKey.toString(16)));
+
+        ECPoint publicKeyPoint = ECCurve.scalarMultiply(privateKey, generatorPoint);
+
+        System.out.println(ON_CURVE_DISPLAY);
+        if (!ECCurve.isOnCurve(publicKeyPoint)) {
+            throw new Crypto1010Exception(KEY_GENERATION_FAIL_ERROR);
+        }
+        System.out.println(ON_CURVE_SUCCESS);
+
+        System.out.println(PUBLIC_KEY_X_DISPLAY + truncate(publicKeyPoint.xCoord.toString(16)));
+        System.out.println(PUBLIC_KEY_Y_DISPLAY + truncate(publicKeyPoint.yCoord.toString(16)));
+
+        System.out.println(ETH_DERIVE_DISPLAY);
+        String address = deriveEthAddress(publicKeyPoint);
+        System.out.println(ADDRESS_DISPLAY + address);
+        System.out.println(COMPLETE_DISPLAY);
+
+        return new KeyPair(privateKey, publicKeyPoint.xCoord, publicKeyPoint.yCoord,
+                           address, CurrencyCode.GENERIC);
     }
 
     private static String deriveEthAddress(ECPoint publicKeyPoint) {
