@@ -15,8 +15,7 @@ public class Wallet {
     private final String currencyCode;
     private final List<String> transactionHistory;
     private String address;
-    private Key publicKey;
-    private Key privateKey;
+    private KeyPair keyPair;
 
     public Wallet(String name) {
         this(name, CurrencyCode.GENERIC);
@@ -57,17 +56,11 @@ public class Wallet {
         return Collections.unmodifiableList(transactionHistory);
     }
 
-    public void setKeys(Key[] keys) {
-        if (keys == null || keys.length < 2 || keys[0] == null || keys[1] == null) {
-            throw new IllegalArgumentException(INVALID_KEYS_ERROR);
-        }
-        String generatedAddress = keys[0].getWalletAddress();
+    public void setKeys(KeyPair keys) {
+        String generatedAddress = keys.getWalletAddress();
         if (generatedAddress == null || generatedAddress.isBlank()) {
             throw new IllegalArgumentException(INVALID_KEYS_ERROR);
         }
-
-        this.publicKey = keys[0];
-        this.privateKey = keys[1];
         this.address = generatedAddress;
     }
 }
