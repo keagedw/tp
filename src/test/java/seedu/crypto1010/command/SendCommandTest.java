@@ -1,6 +1,7 @@
 package seedu.crypto1010.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -52,17 +53,15 @@ class SendCommandTest {
     }
 
     @Test
-    void execute_walletHasNoKeyPair_throwsException() throws Crypto1010Exception {
+    void execute_walletHasNoKeyPair_succeeds() throws Crypto1010Exception {
         Blockchain blockchain = Blockchain.createDefault();
         WalletManager walletManager = new WalletManager();
         walletManager.createWallet("bob");
         blockchain.addTransactions(List.of("network -> bob : 5"));
         SendCommand command = new SendCommand("w/bob to/" + ETH_ADDRESS + " amt/1", walletManager);
 
-        Crypto1010Exception exception = assertThrows(
-                Crypto1010Exception.class,
-                () -> command.execute(blockchain));
-        assertTrue(exception.getMessage().contains("no key pair"));
+        String output = normalizeOutput(runCommand(command, blockchain));
+        assertTrue(output.contains("Transaction Sent Successfully"));
     }
 
     @Test
@@ -104,10 +103,11 @@ class SendCommandTest {
     }
 
     @Test
-    void execute_manualFeeOverrideWithUnsupportedSpeed_succeeds() {
+    void execute_manualFeeOverrideWithUnsupportedSpeed_succeeds() throws Crypto1010Exception {
         Blockchain blockchain = Blockchain.createDefault();
         WalletManager walletManager = new WalletManager();
         walletManager.createWallet("bob");
+        blockchain.addTransactions(List.of("network -> bob : 5"));
         SendCommand command = new SendCommand(
                 "w/bob to/" + ETH_ADDRESS + " amt/1 speed/ultra fee/0.1",
                 walletManager);
@@ -127,10 +127,11 @@ class SendCommandTest {
     }
 
     @Test
-    void execute_noteContainingPrefixLikeText_preservesEntireNote() {
+    void execute_noteContainingPrefixLikeText_preservesEntireNote() throws Crypto1010Exception {
         Blockchain blockchain = Blockchain.createDefault();
         WalletManager walletManager = new WalletManager();
         walletManager.createWallet("bob");
+        blockchain.addTransactions(List.of("network -> bob : 5"));
         SendCommand command = new SendCommand(
                 "w/bob to/" + ETH_ADDRESS + " amt/1 fee/0 note/repay w/alice tomorrow",
                 walletManager);
@@ -151,18 +152,16 @@ class SendCommandTest {
     }
 
     @Test
-    void execute_validBitcoinAddress_succeeds() {
+    void execute_validBitcoinAddress_succeeds() throws Crypto1010Exception {
         Blockchain blockchain = Blockchain.createDefault();
         WalletManager walletManager = new WalletManager();
         walletManager.createWallet("bob");
+        blockchain.addTransactions(List.of("network -> bob : 5"));
         SendCommand command = new SendCommand("w/bob to/" + BTC_ADDRESS + " amt/1 fee/0", walletManager);
 
-        String output = runCommand(command, blockchain);
-
-        Crypto1010Exception exception = assertThrows(
-                Crypto1010Exception.class,
-                () -> command.execute(blockchain));
-        assertTrue(exception.getMessage().contains("Invalid recipient address"));
+        String output = normalizeOutput(runCommand(command, blockchain));
+        assertTrue(output.contains("Transaction Sent Successfully"));
+        assertTrue(output.contains("To : " + BTC_ADDRESS));
     }
 
     @Test
