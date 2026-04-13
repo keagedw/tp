@@ -103,9 +103,10 @@ public class SendCommand extends Command {
 
     private TransferRequest createTransferRequest(ParsedArgs parsed) throws Crypto1010Exception {
         BigDecimal amount = parsePositiveAmount(parsed.amount);
-        String speed = resolveSpeed(parsed.speed);
+        boolean hasManualFee = parsed.fee != null;
+        String speed = hasManualFee ? DEFAULT_SPEED : resolveSpeed(parsed.speed);
         BigDecimal fee = resolveValidatedFee(parsed.fee, speed);
-        String speedLabel = parsed.fee == null ? speed : MANUAL_SPEED_LABEL;
+        String speedLabel = hasManualFee ? MANUAL_SPEED_LABEL : speed;
 
         return new TransferRequest(
                 parsed.walletName,

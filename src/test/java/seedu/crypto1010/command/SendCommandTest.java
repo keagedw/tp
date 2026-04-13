@@ -137,6 +137,29 @@ class SendCommandTest {
     }
 
     @Test
+    void execute_manualFeeOverrideWithUnsupportedSpeed_succeeds() {
+        Blockchain blockchain = Blockchain.createDefault();
+        WalletManager walletManager = new WalletManager();
+        walletManager.createWallet("bob");
+        SendCommand command = new SendCommand(
+                "w/bob to/" + ETH_ADDRESS + " amt/1 speed/ultra fee/0.1",
+                walletManager);
+
+        String output = runCommand(command, blockchain);
+
+        String normalized = normalizeOutput(output);
+        assertTrue(normalized.contains("Transaction Sent Successfully"));
+        assertTrue(normalized.contains("Wallet : bob"));
+        assertTrue(normalized.contains("To : " + ETH_ADDRESS));
+        assertTrue(normalized.contains("Amount : 1"));
+        assertTrue(normalized.contains("Speed : manual"));
+        assertTrue(normalized.contains("Fee : 0.1"));
+        Wallet wallet = walletManager.findWallet("bob").orElse(null);
+        assertNotNull(wallet);
+        assertTrue(wallet.getTransactionHistory().get(0).contains("speed/manual"));
+    }
+
+    @Test
     void execute_noteContainingPrefixLikeText_preservesEntireNote() {
         Blockchain blockchain = Blockchain.createDefault();
         WalletManager walletManager = new WalletManager();
