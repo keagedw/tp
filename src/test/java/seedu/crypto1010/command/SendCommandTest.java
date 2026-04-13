@@ -82,7 +82,82 @@ class SendCommandTest {
         Blockchain blockchain = Blockchain.createDefault();
         WalletManager walletManager = new WalletManager();
         walletManager.createWallet("bob");
-        SendCommand command = new SendCommand("w/bob to/not-an-address amt/1", walletManager);
+        blockchain.addTransactions(List.of("network -> bob : 5"));
+        SendCommand command = new SendCommand(
+                "w/bob to/" + ETH_ADDRESS + " amt/4 speed/fast fee/0.5 note/priority transfer",
+                walletManager);
+
+        String output = runCommand(command, blockchain);
+
+        String normalized = normalizeOutput(output);
+        assertTrue(normalized.contains("Transaction Sent Successfully"));
+        assertTrue(normalized.contains("Wallet : bob"));
+        assertTrue(normalized.contains("To : " + ETH_ADDRESS));
+        assertTrue(normalized.contains("Amount : 4"));
+        assertTrue(normalized.contains("Speed : manual"));
+        assertTrue(normalized.contains("Fee : 0.5"));
+        assertTrue(normalized.contains("Note : priority transfer"));
+        assertEquals(new BigDecimal("0.5"), blockchain.getPreciseBalance("network-fee"));
+        Wallet wallet = walletManager.findWallet("bob").orElse(null);
+        assertNotNull(wallet);
+        assertTrue(wallet.getTransactionHistory().get(0).contains("note/priority transfer"));
+    }
+
+    @Test
+    void execute_manualFeeOverrideWithUnsupportedSpeed_succeeds() {
+        Blockchain blockchain = Blockchain.createDefault();
+        WalletManager walletManager = new WalletManager();
+        walletManager.createWallet("bob");
+        SendCommand command = new SendCommand(
+                "w/bob to/" + ETH_ADDRESS + " amt/1 speed/ultra fee/0.1",
+                walletManager);
+
+        String output = runCommand(command, blockchain);
+
+        String normalized = normalizeOutput(output);
+        assertTrue(normalized.contains("Transaction Sent Successfully"));
+        assertTrue(normalized.contains("Wallet : bob"));
+        assertTrue(normalized.contains("To : " + ETH_ADDRESS));
+        assertTrue(normalized.contains("Amount : 1"));
+        assertTrue(normalized.contains("Speed : manual"));
+        assertTrue(normalized.contains("Fee : 0.1"));
+        Wallet wallet = walletManager.findWallet("bob").orElse(null);
+        assertNotNull(wallet);
+        assertTrue(wallet.getTransactionHistory().get(0).contains("speed/manual"));
+    }
+
+    @Test
+    void execute_noteContainingPrefixLikeText_preservesEntireNote() {
+        Blockchain blockchain = Blockchain.createDefault();
+        WalletManager walletManager = new WalletManager();
+        walletManager.createWallet("bob");
+        SendCommand command = new SendCommand(
+                "w/bob to/" + ETH_ADDRESS + " amt/1 fee/0 note/repay w/alice tomorrow",
+                walletManager);
+
+        String output = runCommand(command, blockchain);
+
+        String normalized = normalizeOutput(output);
+        assertTrue(normalized.contains("Transaction Sent Successfully"));
+        assertTrue(normalized.contains("Wallet : bob"));
+        assertTrue(normalized.contains("To : " + ETH_ADDRESS));
+        assertTrue(normalized.contains("Amount : 1"));
+        assertTrue(normalized.contains("Speed : manual"));
+        assertTrue(normalized.contains("Fee : 0"));
+        assertTrue(normalized.contains("Note : repay w/alice tomorrow"));
+        Wallet wallet = walletManager.findWallet("bob").orElse(null);
+        assertNotNull(wallet);
+        assertTrue(wallet.getTransactionHistory().get(0).contains("note/repay w/alice tomorrow"));
+    }
+
+    @Test
+    void execute_validBitcoinAddress_succeeds() {
+        Blockchain blockchain = Blockchain.createDefault();
+        WalletManager walletManager = new WalletManager();
+        walletManager.createWallet("bob");
+        SendCommand command = new SendCommand("w/bob to/" + BTC_ADDRESS + " amt/1 fee/0", walletManager);
+
+        String output = runCommand(command, blockchain);
 
         Crypto1010Exception exception = assertThrows(
                 Crypto1010Exception.class,
