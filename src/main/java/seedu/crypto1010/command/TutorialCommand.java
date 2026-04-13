@@ -67,25 +67,25 @@ public class TutorialCommand extends Command {
     };
 
     private static final String[] tutorialMessages = {
-            """
+        """
             A wallet is your identity on the blockchain.
             It doesn't store coins directly — instead, it holds cryptographic keys that prove ownership.
             Think of it like a password manager for the blockchain.
             Let's create one for Alice.
-            """,
+           """,
 
-            """
+        """
             Every participant on the blockchain needs their own wallet with a unique identity.
             Bob's wallet will be completely independent from Alice's — no central authority connects them.
             Let's create one for Bob too.
-            """,
+          """,
 
-            """
+        """
             Now let's list both wallets.
             Pay attention to the Address column when the results appear.
             """,
 
-            """
+        """
             Notice that neither wallet has an address or currency yet.
             For this tutorial, we will ignore currency.
             Addresses are derived from cryptographic keys, which we haven't generated.
@@ -96,28 +96,28 @@ public class TutorialCommand extends Command {
             then hash that into a unique address.
             """,
 
-            """
+        """
             Alice now has a private key, a public key, and a unique address.
             The private key stays secret — it's what proves ownership.
             The address is what you share publicly to receive funds.
             Now let's generate the same for Bob.
             """,
 
-            """
+        """
             Bob now has his own key pair too.
             Notice each address is completely unique — the pool of possible private keys is so astronomically large (2²⁵⁶)
             that generating the same one twice is virtually impossible.
             Let's list both wallets now to see how they look.
             """,
 
-            """
+        """
             Both wallets now have a 42-character hexadecimal address starting with 0x.
             This is what you share publicly when you want to receive funds — like a bank account number,
             but without revealing anything about your private key.
             Let's check Alice's current balance.
             """,
 
-            """
+        """
             This is the amount that Alice has before our transaction.
             In a blockchain balances aren't stored inside the wallet itself.
             The blockchain tallies all incoming and outgoing transactions to arrive at a balance.
@@ -125,18 +125,18 @@ public class TutorialCommand extends Command {
             """,
 
 
-            """
+        """
             Now let's send some funds from Bob to Alice.
             When Bob sends money, his wallet uses his private key to cryptographically sign the transaction,
             proving he authorised it without ever revealing the key.
             Anyone on the network can verify this using his public key, but only Bob could have created that signature.
             """,
 
-            "The transaction went through. Let's verify that Alice received the funds.",
+        "The transaction went through. Let's verify that Alice received the funds.",
 
-            "Alice has 3 more dollars. Now let's check what Bob has left — see if the number matches what you'd expect.",
+        "Alice has 3 more dollars. Now let's check what Bob has left — see if the number matches what you'd expect.",
 
-            """
+        """
             Bob lost more than $3. Why is this the case?
             The difference is a network fee — every transaction on a blockchain carries one,
             paid to the nodes that verify and record it.
@@ -144,21 +144,21 @@ public class TutorialCommand extends Command {
             Let's look at the send command to understand how fees are determined.
             """,
 
-            """
+        """
             You can see transactions support a speed setting — slow, standard, or fast.
             The faster you want your transaction confirmed, the higher the fee.
             Since we didn't specify one, it defaulted to standard.
             Let's pull up Bob's transaction history to see exactly what was charged.
             """,
 
-            """
+        """
             There it is — $3 to Alice and $0.001 to the network, both permanently on record.
             This is the blockchain's public ledger in action: every transaction is fully
             auditable and nothing can be quietly altered or erased.
             Now let's look at the actual block that contains this transaction.
             """,
 
-            """
+        """
             You can see Block 2 holds our transaction and links back to Block 1 via the previous hash.
             Each block's hash is computed from its contents plus the previous block's hash,
             so tampering with any block would break every block that follows it,
@@ -166,7 +166,7 @@ public class TutorialCommand extends Command {
             Let's validate the whole chain to confirm everything is intact.
             """,
 
-            """
+        """
             The chain is valid — every block checks out.
             You've now seen the full lifecycle of a blockchain transaction:
             wallets, key pairs, signing, sending, fees, blocks, and validation.
