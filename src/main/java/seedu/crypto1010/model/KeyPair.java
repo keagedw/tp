@@ -37,7 +37,7 @@ public class KeyPair {
             "483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8", 16);
     private static final BigInteger coefficient = BigInteger.valueOf(7);
 
-    static final ECPoint generatorPoint = new ECPoint(generatorX, generatorY);
+    private static final ECPoint GENERATOR_POINT = new ECPoint(generatorX, generatorY);
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final byte BTC_VERSION_BYTE = 0x00;
 
@@ -93,7 +93,7 @@ public class KeyPair {
         BigInteger privateKey = generatePrivateKey();
         System.out.println(PRIVATE_KEY_DISPLAY + truncate(privateKey.toString(16)));
 
-        ECPoint publicKeyPoint = ECCurve.scalarMultiply(privateKey, generatorPoint);
+        ECPoint publicKeyPoint = ECCurve.scalarMultiply(privateKey, GENERATOR_POINT);
 
         System.out.println(ON_CURVE_DISPLAY);
         if (!ECCurve.isOnCurve(publicKeyPoint)) {
@@ -119,7 +119,7 @@ public class KeyPair {
         BigInteger privateKey = generatePrivateKey();
         System.out.println(PRIVATE_KEY_DISPLAY + truncate(privateKey.toString(16)));
 
-        ECPoint publicKeyPoint = ECCurve.scalarMultiply(privateKey, generatorPoint);
+        ECPoint publicKeyPoint = ECCurve.scalarMultiply(privateKey, GENERATOR_POINT);
 
         System.out.println(ON_CURVE_DISPLAY);
         if (!ECCurve.isOnCurve(publicKeyPoint)) {
@@ -145,7 +145,7 @@ public class KeyPair {
         BigInteger privateKey = generatePrivateKey();
         System.out.println(PRIVATE_KEY_DISPLAY + truncate(privateKey.toString(16)));
 
-        ECPoint publicKeyPoint = ECCurve.scalarMultiply(privateKey, generatorPoint);
+        ECPoint publicKeyPoint = ECCurve.scalarMultiply(privateKey, GENERATOR_POINT);
 
         System.out.println(ON_CURVE_DISPLAY);
         if (!ECCurve.isOnCurve(publicKeyPoint)) {

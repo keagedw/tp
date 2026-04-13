@@ -1,6 +1,7 @@
 package seedu.crypto1010.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -104,7 +105,7 @@ class SendCommandTest {
     }
 
     @Test
-    void execute_manualFeeOverrideWithUnsupportedSpeed_succeeds() {
+    void execute_manualFeeOverrideWithUnsupportedSpeed_succeeds() throws Crypto1010Exception {
         Blockchain blockchain = Blockchain.createDefault();
         WalletManager walletManager = new WalletManager();
         walletManager.createWallet("bob");
@@ -127,7 +128,7 @@ class SendCommandTest {
     }
 
     @Test
-    void execute_noteContainingPrefixLikeText_preservesEntireNote() {
+    void execute_noteContainingPrefixLikeText_preservesEntireNote() throws Crypto1010Exception {
         Blockchain blockchain = Blockchain.createDefault();
         WalletManager walletManager = new WalletManager();
         walletManager.createWallet("bob");
@@ -151,7 +152,7 @@ class SendCommandTest {
     }
 
     @Test
-    void execute_validBitcoinAddress_succeeds() {
+    void execute_validBitcoinAddress_succeeds() throws Crypto1010Exception {
         Blockchain blockchain = Blockchain.createDefault();
         WalletManager walletManager = new WalletManager();
         walletManager.createWallet("bob");
