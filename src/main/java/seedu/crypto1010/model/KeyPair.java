@@ -80,6 +80,14 @@ public class KeyPair {
     }
 
     /**
+     * Restores keypair data from previous sessions to insert into this session.
+     */
+    public static KeyPair restore(BigInteger privateKey, BigInteger publicKeyX,
+                                  BigInteger publicKeyY, String address, String currencyCode) {
+        return new KeyPair(privateKey, publicKeyX, publicKeyY, address, currencyCode);
+    }
+
+    /**
      * Picks the address derivation strategy that matches the wallet currency.
      */
     public static KeyPair generate(String currencyCode) throws Crypto1010Exception {

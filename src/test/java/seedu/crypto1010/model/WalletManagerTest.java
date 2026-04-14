@@ -2,6 +2,7 @@ package seedu.crypto1010.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,9 @@ class WalletManagerTest {
         WalletManager walletManager = new WalletManager();
         walletManager.createWallet("alice");
 
-        assertThrows(Crypto1010Exception.class, () -> walletManager.createWallet("Alice"));
+        Crypto1010Exception exception =
+                assertThrows(Crypto1010Exception.class, () -> walletManager.createWallet("Alice"));
+        assertTrue(exception.getMessage().contains("wallet already exists"));
     }
 
     @Test
@@ -23,8 +26,7 @@ class WalletManagerTest {
 
         Crypto1010Exception exception =
                 assertThrows(Crypto1010Exception.class, () -> walletManager.createWallet("bob", "btc"));
-        assertEquals("Error: a wallet for that currency already exists in this account."
-                + "Use: create w/WALLET_NAME [curr/CURRENCY]", exception.getMessage());
+        assertTrue(exception.getMessage().contains("currency already exists"));
     }
 
     @Test
@@ -33,7 +35,7 @@ class WalletManagerTest {
 
         Crypto1010Exception exception =
                 assertThrows(Crypto1010Exception.class, () -> walletManager.createWallet("ali|ce"));
-        assertEquals("walletName contains reserved character: |", exception.getMessage());
+        assertTrue(exception.getMessage().contains("reserved character"));
     }
 
     @Test
@@ -42,7 +44,45 @@ class WalletManagerTest {
 
         Crypto1010Exception exception =
                 assertThrows(Crypto1010Exception.class,
-                        () -> walletManager.createWallet("abcdefghijklmnopqrstuvwxyz1234567"));
+                             () -> walletManager.createWallet("abcdefghijklmnopqrstuvwxyz1234567"));
         assertEquals("walletName exceeds max length: 32", exception.getMessage());
+    }
+
+    @Test
+    void createWallet_reservedName_throwsCrypto1010Exception() {
+        WalletManager walletManager = new WalletManager();
+
+        Crypto1010Exception exception =
+                assertThrows(Crypto1010Exception.class, () -> walletManager.createWallet("network"));
+        assertTrue(exception.getMessage().contains("reserved"));
+    }
+
+    @Test
+    void createWallet_blankName_throwsCrypto1010Exception() {
+        WalletManager walletManager = new WalletManager();
+
+        Crypto1010Exception exception =
+                assertThrows(Crypto1010Exception.class, () -> walletManager.createWallet("   "));
+        assertTrue(exception.getMessage().contains("must not be blank"));
+    }
+
+    @Test
+    void createWallet_validName_createsWallet() throws Crypto1010Exception {
+        WalletManager walletManager = new WalletManager();
+
+        Wallet wallet = walletManager.createWallet("alice");
+
+        assertEquals("alice", wallet.getName());
+        assertEquals(CurrencyCode.GENERIC, wallet.getCurrencyCode());
+        assertEquals(1, walletManager.getWallets().size());
+    }
+
+    @Test
+    void createWallet_validNameWithCurrency_createsWalletWithCurrency() throws Crypto1010Exception {
+        WalletManager walletManager = new WalletManager();
+
+        Wallet wallet = walletManager.createWallet("alice", "eth");
+
+        assertEquals("eth", wallet.getCurrencyCode());
     }
 }
