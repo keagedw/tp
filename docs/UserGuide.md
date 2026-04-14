@@ -272,7 +272,6 @@ Based on planned work tracked in project discussions/issues, the next user-facin
 
 ### Cross-account address discovery (planned)
 - Resolve local wallet addresses across accounts without requiring a direct account name transfer command.
-- Persist generated keys and wallet addresses across restarts so account-to-account interactions are easier to continue.
 
 This feature is not available yet in the current release.
 
@@ -300,8 +299,9 @@ This feature is not available yet in the current release.
 - Account credentials are stored in `data/accounts/credentials.txt`.
 - Credential-signing key is stored in `data/accounts/credentials.key`.
 - Each account has its own blockchain data at `data/accounts/USERNAME/blockchain.json`.
-- Each account has its own wallet names, wallet currencies, and wallet send history at `data/accounts/USERNAME/wallets.txt`.
-- Generated keys and wallet addresses are not currently persisted; run `keygen` again after restarting if you need an address.
+- Each account has its own wallet names, wallet currencies, wallet send history, wallet address, and wallet key pairs saved at `data/accounts/USERNAME/wallets.txt`.
+- Due to the nature of cryptocurrency and blockchain, as well as the intentional functionalities of balance and currency, it is advised not to tamper with saved values
+as it can easily corrupt and prevent loading into new sessions, and hence saving of new data.
 - Missing or blank blockchain files are treated as no data yet and default data is loaded.
 - Corrupted blockchain or wallet data triggers safe fallback, and saving is disabled to avoid overwriting that account's files.
 - Credential data is signed; tampering with signed credential records is rejected on load.
@@ -315,8 +315,9 @@ This feature is not available yet in the current release.
 **Q**: Where is my blockchain data stored?  
 **A**: In `data/accounts/USERNAME/blockchain.json` for the currently logged-in account.
 
-**Q**: Why is my wallet address missing after restart?  
-**A**: Wallet names and send history are persisted, but generated keys and wallet addresses are not. Run `keygen w/WALLET_NAME` again.
+**Q**: Can I access and change wallet attributes in the text file directly?  
+**A**: Tampering with saved files is heavily discouraged as many attributes are cryptographically determined, hence tampering can easily cause issues.
+In the program, many edits to the save files will cause corruption, hence the file data will often not be loaded for safety purposes.
 
 **Q**: Why am I blocked from login even with the correct password?  
 **A**: After repeated failed attempts, that username is locked for 30 seconds. Wait and retry.
